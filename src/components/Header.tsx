@@ -196,7 +196,7 @@ export default function Header() {
 
           {/* Notification Dropdown */}
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-[360px] max-w-[360px] bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="fixed sm:absolute top-14 sm:top-auto right-4 sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-[360px] max-w-[360px] bg-white rounded-xl shadow-2xl sm:shadow-xl border border-gray-100 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
                 <h3 className="font-bold text-gray-800 text-sm">Notifications</h3>
                 <div className="flex items-center gap-3">
