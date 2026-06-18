@@ -15,6 +15,7 @@ import {
   Megaphone,
   Volume2,
   CalendarDays,
+  GraduationCap,
   ChevronsLeft,
   ChevronsRight,
   X
@@ -30,6 +31,7 @@ export default function Sidebar() {
     { name: 'Dashboard', icon: LayoutDashboard, href: '/' },
     { name: 'Appointments', icon: CalendarCheck, href: '/appointments' },
     { name: 'Doctors', icon: Stethoscope, href: '/doctors' },
+    { name: 'Faculty', icon: GraduationCap, href: '/faculty' },
     { name: 'Departments', icon: Building2, href: '/departments' },
     { name: 'OPD Timing', icon: Timer, href: '/opd-timing' },
     { name: 'Slots', icon: Clock, href: '/slots' },
