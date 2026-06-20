@@ -171,6 +171,7 @@ export default function FacultyPage() {
   // Photo
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoRemoved, setPhotoRemoved] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -239,7 +240,7 @@ export default function FacultyPage() {
     if (file) handleImageFile(file);
   };
   const removePhoto = () => {
-    setPhotoFile(null); setPhotoPreview(null);
+    setPhotoFile(null); setPhotoPreview(null); setPhotoRemoved(true);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   const getImageUrl = (img: string | null | undefined) =>
@@ -250,7 +251,6 @@ export default function FacultyPage() {
     if (!form.name.trim()) { showToast("Name is required.", "error"); return; }
     if (!form.designation.trim()) { showToast("Designation is required.", "error"); return; }
     if (!form.department.trim()) { showToast("Department is required.", "error"); return; }
-    if (!form.experience.trim()) { showToast("Experience is required.", "error"); return; }
 
     setSaving(true);
     const url = editId ? `${API_BASE}/faculty/${editId}` : `${API_BASE}/faculty`;
@@ -263,14 +263,18 @@ export default function FacultyPage() {
     fd.append("department", form.department.trim());
     fd.append("credentials", form.credentials ? form.credentials.trim() : "");
     fd.append("specialty", form.specialty ? form.specialty.trim() : "");
-    fd.append("experience", form.experience.trim());
+    fd.append("experience", form.experience ? form.experience.trim() : "");
     fd.append("displayOrder", form.displayOrder || "999");
 
     // Tags: convert comma-separated string to JSON array
     const tagsArr = form.tags.split(",").map((t) => t.trim()).filter(Boolean);
     fd.append("tags", JSON.stringify(tagsArr));
 
-    if (photoFile) fd.append("photo", photoFile);
+    if (photoFile) {
+      fd.append("photo", photoFile);
+    } else if (photoRemoved) {
+      fd.append("removePhoto", "true");
+    }
 
     try {
       const res = await fetch(url, { method, headers: { Authorization: `Bearer ${token()}` }, body: fd });
@@ -306,12 +310,14 @@ export default function FacultyPage() {
     const imgUrl = getImageUrl(f.photo);
     setPhotoPreview(imgUrl);
     setPhotoFile(null);
+    setPhotoRemoved(false);
     setShowForm(true);
   };
 
   const handleCloseForm = () => {
     setShowForm(false); setEditId(null);
-    setForm(DEFAULT_FORM); removePhoto();
+    setForm(DEFAULT_FORM); setPhotoFile(null); setPhotoPreview(null); setPhotoRemoved(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // ── Delete ────────────────────────────────────────────────────────────────
@@ -360,11 +366,11 @@ export default function FacultyPage() {
   const filtered = faculty.filter((f) => {
     const q = searchQuery.toLowerCase();
     const matchSearch = !q ||
-      f.name.toLowerCase().includes(q) ||
-      f.department.toLowerCase().includes(q) ||
-      f.designation.toLowerCase().includes(q) ||
-      f.credentials.toLowerCase().includes(q) ||
-      f.specialty.toLowerCase().includes(q);
+      f.name?.toLowerCase().includes(q) ||
+      f.department?.toLowerCase().includes(q) ||
+      f.designation?.toLowerCase().includes(q) ||
+      f.credentials?.toLowerCase().includes(q) ||
+      f.specialty?.toLowerCase().includes(q);
     const matchStatus = statusFilter === "all" || (statusFilter === "active" ? f.isActive : !f.isActive);
     const matchDept = deptFilter === "all" || f.department === deptFilter;
     return matchSearch && matchStatus && matchDept;
@@ -537,7 +543,7 @@ export default function FacultyPage() {
 
               {/* Experience */}
               <div>
-                <label className="text-xs font-semibold text-gray-600">Experience *</label>
+                <label className="text-xs font-semibold text-gray-600">Experience</label>
                 <input value={form.experience ?? ""} onChange={(e) => setForm({ ...form, experience: e.target.value })}
                   placeholder="e.g. 20+ Years Experience"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mt-1 focus:ring-2 focus:ring-[#1a3a6b]/30 focus:border-[#1a3a6b] outline-none" />
