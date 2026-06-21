@@ -18,7 +18,8 @@ import {
   GraduationCap,
   ChevronsLeft,
   ChevronsRight,
-  X
+  X,
+  Activity
 } from 'lucide-react';
 import { useSidebar } from '@/components/SidebarContext';
 
@@ -38,6 +39,7 @@ export default function Sidebar() {
     { name: 'Contact', icon: MessageSquare, href: '/contact' },
     { name: 'Notices', icon: Megaphone, href: '/notices' },
     { name: 'Announcements', icon: Volume2, href: '/announcements' },
+    { name: 'News Tickers', icon: Activity, href: '/news-tickers' },
     { name: 'Events', icon: CalendarDays, href: '/events' },
   ];
 
